@@ -1,6 +1,7 @@
 from screen import *
 import pygame
 
+# Intro screen. basically nothing
 
 class Intro(Screen):
 

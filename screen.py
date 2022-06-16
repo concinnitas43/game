@@ -3,6 +3,8 @@ import random
 from obj import *
 from vec import *
 
+# Barebone for the screen class
+
 FPS = 30
 dt = 1 / 30
 N = 10
@@ -24,6 +26,10 @@ class Screen:
         self.height = height
 
         self.config = {}
+
+    def do(self, WIN):
+
+        pass
 
 
 class ScreenManager:

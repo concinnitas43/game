@@ -1,0 +1,102 @@
+from screen import *
+import pygame
+
+COOL_TIME = 6
+
+class Setting:
+
+    def __init__(self):
+        self.options = {
+                "mode" : ["easy", "hard"],
+                "sound" : ["on", "off"],
+                }
+        self.settings = {
+                "mode" : 0,
+                "sound" : 0,
+                }
+
+class SettingScreen(Screen):
+
+    def __init__(self, width, height, setting):
+        super().__init__(width, height)
+
+        self.fpsClock = pygame.time.Clock()
+
+        self.setting = setting
+
+        self.selected = 0
+
+        self.cooltime = COOL_TIME
+
+    def update(self, *args):
+        pass
+
+    def reset(self, *args):
+        pass
+
+
+    def do(self, WIN):
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return (False, [])
+
+        if pygame.key.get_pressed()[pygame.K_DOWN]:
+            if self.cooltime == 0:
+                self.selected = (self.selected + 1) % len(self.setting.options)
+                self.cooltime = COOL_TIME
+        if pygame.key.get_pressed()[pygame.K_UP]:
+            if self.cooltime == 0:
+                self.selected = (self.selected - 1) % len(self.setting.options)
+                self.cooltime = COOL_TIME
+
+        if pygame.key.get_pressed()[pygame.K_SPACE]:
+            if self.cooltime == 0:
+
+                self.cooltime = COOL_TIME
+
+        self.cooltime = max(0, self.cooltime - 1)
+        WIN.fill((0, 0, 0))
+
+        my_font = pygame.font.SysFont("monaco", 30, True, False)
+
+        text_title = my_font.render("Settings", True, (255, 255, 255))
+        text_title_rect = text_title.get_rect()
+        text_title_rect.centerx = self.width // 2
+        text_title_rect.centery = self.height // 3
+        WIN.blit(text_title, text_title_rect)
+
+        pygame.draw.rect(WIN, (64, 64, 64), pygame.Rect(0, self.height // 3 + 30 + 60 * self.selected, self.width, 60)) 
+
+        for option in self.setting.options.keys():
+            for mode_index in range(len(self.setting.options[option])):
+                l = len(self.setting.options[option])
+                mode = self.setting.options[option][mode_index]
+                # if mode == self.setting.settings[option]:
+
+                if mode_index == self.setting.settings[option]:
+                    bfont = pygame.font.SysFont("monaco", 20, True, False)
+                    text = bfont.render(mode, True, (255, 255, 255))
+                    text_rect = text.get_rect()
+                    text_rect.centerx = (mode_index + 1) * self.width // (l + 1)
+                    text_rect.centery = self.height // 3 + 60 + 60 * list(self.setting.options.keys()).index(option)
+                    WIN.blit(text, text_rect)
+
+                else:
+                    tfont = pygame.font.SysFont("monaco", 15, True, False)
+                    text = tfont.render(mode, True, (255, 255, 255))
+                    text_rect = text.get_rect()
+                    text_rect.centerx = (mode_index + 1) * self.width // (l + 1)
+                    text_rect.centery = self.height // 3 + 60 + 60 * list(self.setting.options.keys()).index(option)
+                    WIN.blit(text, text_rect)
+
+                   
+        self.fpsClock.tick(FPS)
+        pygame.display.flip()
+        return (True, [])
+
+
+
+
+
+

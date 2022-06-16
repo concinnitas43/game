@@ -1,6 +1,7 @@
 from screen import *
 import pygame
 
+# Reset screen after death
 class Reset(Screen):
 
     def __init__(self, width, height):
@@ -8,6 +9,7 @@ class Reset(Screen):
         self.fpsClock = pygame.time.Clock()
         self.username = ""
         self.scoreboard = dict()
+        self.selected=0
         self.scores = []
 
     def update(self, *args):
@@ -16,17 +18,16 @@ class Reset(Screen):
     def reset(self, *args):
         pass
 
-
     def do(self, WIN):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return (False, [])
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+            elif event.type == pygame.KEYDOWN: # Key inputting system
+                if event.key == pygame.K_SPACE: # space...
                     self.username = ""
-                elif event.key == pygame.K_BACKSPACE:
+                elif event.key == pygame.K_BACKSPACE: # delete a key
                     self.username = self.username[:-1]
-                elif event.key == pygame.K_RETURN:
+                elif event.key == pygame.K_RETURN: # save to the scoreboard
                     if self.username in self.scoreboard.keys():
                         self.scoreboard[self.username].append(int(self.config["others"][1]["content"]))
                         self.scores.append((self.config["others"][1]["content"], self.username))
@@ -36,29 +37,22 @@ class Reset(Screen):
                     self.username = ""
                     self.scores.sort()
                     print(self.scoreboard)
-                else:
+                else: # Just adds the character
                     self.username += event.unicode
 
-        if pygame.key.get_pressed()[pygame.K_DOWN]:
-            if self.selected == 0:
-                self.selected = 1
-            else:
-                self.selected = 3 - self.selected
 
-        if pygame.key.get_pressed()[pygame.K_UP]:
-            if self.selected == 0:
-                self.selected = 2
-            else:
-                self.selected = 3 - self.selected
-
-        if pygame.key.get_pressed()[pygame.K_SPACE]:
+        if pygame.key.get_pressed()[pygame.K_SPACE]: # Back to game
             return ('game', [])
 
-        
+        if pygame.key.get_pressed()[pygame.K_BACKSPACE]: # menu
+            return ('menu', [])
+
+         
         WIN.fill((0, 0, 0))
 
         my_font = pygame.font.SysFont("monaco", 30, True, False)
 
+        # display the title
         text_title = my_font.render(self.config["title"], True, (255, 255, 255))
         text_title_rect = text_title.get_rect()
         text_title_rect.centerx = self.width // 2
@@ -66,6 +60,7 @@ class Reset(Screen):
         WIN.blit(text_title, text_title_rect)
 
 
+        # Display other stuffs according to the config dictionary
         for i in range(len(self.config["others"])):
             tfont = pygame.font.SysFont("monaco", 15, True, False)
             some_text = self.config["others"][i]
@@ -76,6 +71,7 @@ class Reset(Screen):
             WIN.blit(text, text_rect)
 
         
+        # User name inputing system
         if self.username == "":
             display_user = "Type Username to Save"
         else:

@@ -1,4 +1,4 @@
-
+# Custom vector class
 
 class vec:
     def __init__(self, x, y):
